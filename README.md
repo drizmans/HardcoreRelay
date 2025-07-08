@@ -96,3 +96,9 @@ The plugin is designed to be world-specific. All game progress (inventory, locat
 ## Commands & Permissions
 
 This plugin is designed for simplicity and requires no setup. There are **no commands** and **no permissions** to configure. All functionality is automatic.
+
+-----
+
+## Known Issues
+
+I think there is an error caused by a race condition if you change dimensions as it rotates players, but the force spectate function is robust enough to continue working.
