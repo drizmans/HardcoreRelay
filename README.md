@@ -6,6 +6,8 @@
 
 The plugin is designed to be self-contained and easy to manage. The entire game state, including the shared character's inventory, location, and game-over status, is tied directly to the world data. This means a fresh start is as simple as creating a new world.
 
+Video Example: https://www.youtube.com/watch?v=L1FDRfQwBt0
+
 -----
 
 ## Features
