@@ -1,5 +1,3 @@
-Of course, here is the README content in Markdown format.
-
 # Hardcore Relay Plugin
 
 ## Overview
