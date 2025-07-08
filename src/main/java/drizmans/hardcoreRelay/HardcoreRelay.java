@@ -33,7 +33,7 @@ public final class HardcoreRelay extends JavaPlugin {
 
     // --- PDC Keys ---
     private NamespacedKey gameOverKey;
-    private NamespacedKey healthKey, foodKey, saturationKey, experienceKey, locationKey, inventoryKey, enderChestKey, effectsKey;
+    private NamespacedKey healthKey, foodKey, saturationKey, experienceKey, locationKey, inventoryKey, enderChestKey, effectsKey, remainingAirKey;
 
     // --- In-Memory State ---
     private Player lastActivePlayer = null;
@@ -79,6 +79,7 @@ public final class HardcoreRelay extends JavaPlugin {
         inventoryKey = new NamespacedKey(this, "relay_inventory");
         enderChestKey = new NamespacedKey(this, "relay_enderchest");
         effectsKey = new NamespacedKey(this, "relay_effects");
+        remainingAirKey = new NamespacedKey(this, "relay_remaining_air");
     }
 
 
@@ -311,6 +312,7 @@ public final class HardcoreRelay extends JavaPlugin {
         newPlayer.setFoodLevel(oldPlayer.getFoodLevel());
         newPlayer.setSaturation(oldPlayer.getSaturation());
         newPlayer.setTotalExperience(oldPlayer.getTotalExperience());
+        newPlayer.setRemainingAir(oldPlayer.getRemainingAir());
         newPlayer.getInventory().setContents(oldPlayer.getInventory().getContents());
         newPlayer.getEnderChest().setContents(oldPlayer.getEnderChest().getContents());
         newPlayer.getActivePotionEffects().forEach(effect -> newPlayer.removePotionEffect(effect.getType()));
@@ -323,6 +325,7 @@ public final class HardcoreRelay extends JavaPlugin {
         newPlayer.setFoodLevel(loadedState.foodLevel);
         newPlayer.setSaturation(loadedState.saturation);
         newPlayer.setTotalExperience(loadedState.experience);
+        newPlayer.setRemainingAir(loadedState.remainingAir);
         newPlayer.getInventory().setContents(loadedState.inventory);
         newPlayer.getEnderChest().setContents(loadedState.enderChest);
         newPlayer.getActivePotionEffects().forEach(effect -> newPlayer.removePotionEffect(effect.getType()));
@@ -497,6 +500,8 @@ public final class HardcoreRelay extends JavaPlugin {
             pdc.set(foodKey, PersistentDataType.INTEGER, player.getFoodLevel());
             pdc.set(saturationKey, PersistentDataType.FLOAT, player.getSaturation());
             pdc.set(experienceKey, PersistentDataType.INTEGER, player.getTotalExperience());
+            pdc.set(remainingAirKey, PersistentDataType.INTEGER, player.getRemainingAir()); // Save oxygen
+            pdc.set(remainingAirKey, PersistentDataType.INTEGER, player.getRemainingAir()); // Save oxygen
             pdc.set(locationKey, PersistentDataType.STRING, PDCUtils.locationToBase64(player.getLocation()));
             pdc.set(inventoryKey, PersistentDataType.STRING, PDCUtils.itemStackArrayToBase64(player.getInventory().getContents()));
             pdc.set(enderChestKey, PersistentDataType.STRING, PDCUtils.itemStackArrayToBase64(player.getEnderChest().getContents()));
@@ -521,6 +526,7 @@ public final class HardcoreRelay extends JavaPlugin {
             loadedState.foodLevel = pdc.get(foodKey, PersistentDataType.INTEGER);
             loadedState.saturation = pdc.get(saturationKey, PersistentDataType.FLOAT);
             loadedState.experience = pdc.get(experienceKey, PersistentDataType.INTEGER);
+            loadedState.remainingAir = pdc.getOrDefault(remainingAirKey, PersistentDataType.INTEGER, 300); // Load oxygen
             loadedState.location = PDCUtils.locationFromBase64(pdc.get(locationKey, PersistentDataType.STRING));
             loadedState.inventory = PDCUtils.base64ToItemStackArray(pdc.get(inventoryKey, PersistentDataType.STRING));
             loadedState.enderChest = PDCUtils.base64ToItemStackArray(pdc.get(enderChestKey, PersistentDataType.STRING));
@@ -579,6 +585,7 @@ public final class HardcoreRelay extends JavaPlugin {
         int foodLevel;
         float saturation;
         int experience;
+        int remainingAir;
         Location location;
         ItemStack[] inventory;
         ItemStack[] enderChest;

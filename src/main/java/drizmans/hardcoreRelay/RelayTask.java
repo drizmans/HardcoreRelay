@@ -6,7 +6,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.UUID;
 
 public class RelayTask extends BukkitRunnable {
 
@@ -40,6 +43,22 @@ public class RelayTask extends BukkitRunnable {
         }
 
         sendActionBarMessages(currentPlayer);
+
+        // We keep teleporting the spectators to the active player because some environmental sounds (Eg. being under-water)
+        // depend on where your player is, not the player you're spectating.
+        // This still doesn't work perfectly if a rotation happens while under-water, but it prevents spectators being stuck with
+        // annoying environmental noises until the next rotation.
+        for (UUID spectatorId : plugin.getPlayerQueue()) {
+            if (spectatorId.equals(currentPlayer.getUniqueId())) {
+                continue;
+            }
+            Player spectator = plugin.getServer().getPlayer(spectatorId);
+            // We only need to teleport if they are actually in spectator mode.
+            if (spectator != null && spectator.isOnline() && spectator.getGameMode() == GameMode.SPECTATOR) {
+                // Using SPECTATE cause can help some client-side predictions
+                spectator.teleport(currentPlayer.getLocation(), PlayerTeleportEvent.TeleportCause.SPECTATE);
+            }
+        }
     }
 
     private void sendActionBarMessages(Player currentPlayer) {
