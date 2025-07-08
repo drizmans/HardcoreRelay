@@ -1,0 +1,4 @@
+name: HardcoreRelay
+version: '1.0-SNAPSHOT'
+main: drizmans.hardcoreRelay.HardcoreRelay
+api-version: '1.21'
